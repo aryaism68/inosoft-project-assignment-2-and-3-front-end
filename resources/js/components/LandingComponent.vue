@@ -33,18 +33,22 @@
             alt=""
         />
         <cart-component
-            :listdatacart="list"
+            :listdatacart="cart"
             @emit-delete-from-cart="deleteFromCart"
             @emit-delete-all-from-cart="deleteAllFromCart"
             @emit-close-cart="closeCart"
-            v-if="!isHidden && totalQuantity > 0"
-            :totalprice="totalPriceCart"
+            @emit-finish="finishCheckout"
+            v-if="!isHidden && totalQuantityInCart > 0"
         ></cart-component>
-        <h1 class="floaters cart-qty" v-if="totalQuantity > 0">
-            {{ totalQuantity }}
+        <h1
+            class="floaters cart-qty"
+            v-if="totalQuantityInCart > 0"
+            @emit-close-cart="closeCart"
+        >
+            {{ totalQuantityInCart }}
         </h1>
         <empty-cart-component
-            v-if="!isHidden && totalQuantity == 0"
+            v-if="!isHidden && totalQuantityInCart == 0"
             @emit-continue="continueShopping"
         ></empty-cart-component>
     </main>
@@ -65,6 +69,8 @@
 </template>
 
 <script>
+import { faInstagramSquare } from "@fortawesome/free-brands-svg-icons";
+
 export default {
     data: function () {
         return {
@@ -74,7 +80,6 @@ export default {
                     category: "Cakes",
                     name: "Choco Cake",
                     description: "A melt-in-mouth Choco Cake",
-                    initialStock: 50,
                     stock: 50,
                     price: 40000,
                     url: "cakesArticle",
@@ -84,7 +89,6 @@ export default {
                     category: "Cookies",
                     name: "Raisins Cookie",
                     description: "Classic ginger Raisins Cookies",
-                    initialStock: 20,
                     stock: 20,
                     price: 10000,
                     url: "cookiesArticle",
@@ -94,7 +98,6 @@ export default {
                     category: "Cupcakes",
                     name: "Vanilla Cupcake",
                     description: "Whipped vanilla frosting on top",
-                    initialStock: 30,
                     stock: 30,
                     price: 20000,
                     url: "cupcakesArticle",
@@ -104,7 +107,6 @@ export default {
                     category: "Donuts",
                     name: "Sweets Donut",
                     description: "Donut worry and be happy",
-                    initialStock: 40,
                     stock: 40,
                     price: 30000,
                     url: "donutsArticle",
@@ -114,48 +116,79 @@ export default {
                     category: "Pastries",
                     name: "Macaron",
                     description: "Crunchy on shells, mildly moist inside",
-                    initialStock: 60,
                     stock: 60,
                     price: 50000,
                     url: "pastriesArticle",
                 },
             ],
+            input: 1,
+            cart: [],
             isHidden: true,
-            componentKey: 0,
         };
     },
     methods: {
         addToCart(index, amountBought) {
-            if (
-                index !== -1 &&
-                this.list[index].stock >= amountBought &&
-                amountBought > 0
-            ) {
-                this.list[index].stock -= amountBought;
+            const item = this.list[index];
+            const cartItemIndex = this.cart.findIndex(
+                (cartItem) => cartItem.SKU === item.SKU
+            );
+            const cartItem = this.cart[cartItemIndex];
+            if (amountBought > 0 && item.stock >= amountBought) {
+                if (cartItemIndex !== -1) {
+                    cartItem.quantity += amountBought;
+                } else {
+                    this.cart.push({
+                        SKU: item.SKU,
+                        name: item.name,
+                        quantity: amountBought,
+                        price: item.price,
+                    });
+                }
+                item.stock -= amountBought;
             } else {
                 window.alert("Masukkan jumlah yang sesuai");
             }
+            console.log("Cart contents:", this.cart);
         },
         addAllToCart(index) {
-            if (index !== -1) {
-                this.list[index].stock = 0;
+            const item = this.list[index];
+            const cartItemIndex = this.cart.findIndex(
+                (cartItem) => cartItem.SKU === item.SKU
+            );
+            const cartItem = this.cart[cartItemIndex];
+            if (cartItemIndex !== -1) {
+                cartItem.quantity += item.stock;
+            } else {
+                this.cart.push({
+                    SKU: item.SKU,
+                    name: item.name,
+                    quantity: item.stock,
+                    price: item.price,
+                });
             }
+            item.stock = 0;
         },
-        deleteFromCart(index, amountCancelled) {
-            if (
-                amountCancelled > 0 &&
-                amountCancelled + this.list[index].stock <=
-                    this.list[index].initialStock
-            ) {
-                this.list[index].stock += amountCancelled;
+        deleteFromCart(cartItemIndex, amountCancelled) {
+            const cartItem = this.cart[cartItemIndex];
+            const itemIndex = this.list.findIndex(
+                (item) => item.SKU === cartItem.SKU
+            );
+            const item = this.list[itemIndex];
+            if (amountCancelled > 0 && amountCancelled <= cartItem.quantity) {
+                item.stock += amountCancelled;
+                cartItem.quantity -= amountCancelled;
             } else {
                 window.alert("Masukkan jumlah yang sesuai");
             }
         },
-        deleteAllFromCart(index) {
-            if (index !== -1) {
-                this.list[index].stock = this.list[index].initialStock;
-            }
+        deleteAllFromCart(cartItemIndex) {
+            const cartItem = this.cart[cartItemIndex];
+            const itemIndex = this.list.findIndex(
+                (item) => item.SKU === cartItem.SKU
+            );
+            const item = this.list[itemIndex];
+            item.stock += cartItem.quantity;
+            cartItem.quantity = 0;
         },
         closeCart() {
             this.isHidden = true;
@@ -163,14 +196,13 @@ export default {
         continueShopping() {
             this.isHidden = true;
         },
+        finishCheckout() {
+            window.location.reload();
+        },
     },
     computed: {
-        totalQuantity() {
-            let totalQty = 0;
-            this.list.forEach((item) => {
-                totalQty += parseInt(item.initialStock) - parseInt(item.stock);
-            });
-            return totalQty;
+        totalQuantityInCart() {
+            return this.cart.reduce((total, item) => total + item.quantity, 0);
         },
     },
     mounted() {

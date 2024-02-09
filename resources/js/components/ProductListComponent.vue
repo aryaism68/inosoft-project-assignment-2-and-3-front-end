@@ -32,8 +32,9 @@
                             <p>Harga = Rp.{{ item.price.toLocaleString() }}</p>
                             <input
                                 type="number"
-                                v-model="amountBought"
+                                v-model="amountBought[index]"
                                 min="1"
+                                placeholder="1"
                             />
                             <button
                                 class="custom-mr"
@@ -76,9 +77,11 @@ export default {
     methods: {
         addToCart(index, amountBought) {
             this.$emit("emit-add-to-cart", index, amountBought);
+            this.amountBought = 1;
         },
         addAllToCart(index) {
             this.$emit("emit-add-all-to-cart", index);
+            this.amountBought = 1;
         },
         checkStock(stock) {
             return stock <= 0;

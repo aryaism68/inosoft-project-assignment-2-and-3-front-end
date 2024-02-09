@@ -10,26 +10,30 @@
             </tr>
             <tr
                 class="list"
-                v-for="(item, index) in listdatacart"
-                :key="index"
-                v-show="item.stock < item.initialStock"
+                v-for="(cartItem, cartItemIndex) in listdatacart"
+                :key="cartItemIndex"
+                v-show="cartItem.quantity > 0"
             >
-                <td>{{ item.name }}</td>
-                <td id="quantity">{{ item.initialStock - item.stock }}</td>
-                <td id="price">Rp.{{ item.price.toLocaleString() }}</td>
+                <td>{{ cartItem.name }}</td>
+                <td id="quantity">{{ cartItem.quantity }}</td>
+                <td id="price">Rp.{{ cartItem.price.toLocaleString() }}</td>
                 <input
                     type="number"
-                    v-model="amountCancelled"
+                    v-model="amountCancelled[cartItemIndex]"
                     min="1"
                     max="999"
+                    placeholder="1"
                 />
                 <button
                     class="custom-mr"
-                    @click="deleteFromCart(index, amountCancelled)"
+                    @click="deleteFromCart(cartItemIndex, amountCancelled)"
                 >
                     Delete
                 </button>
-                <button class="custom-mr" @click="deleteAllFromCart(index)">
+                <button
+                    class="custom-mr"
+                    @click="deleteAllFromCart(cartItemIndex)"
+                >
                     Delete All
                 </button>
             </tr>
@@ -46,7 +50,7 @@
             >
                 Checkout
             </button>
-            <button class="custom-mr buy-more-button" @click="closeCart">
+            <button class="custom-mr shop-more-button" @click="closeCart">
                 Shop more
             </button>
             <modal-component
@@ -68,7 +72,6 @@ export default {
         "emit-delete-from-cart",
         "emit-delete-all-from-cart",
         "emit-close-cart",
-        "emit-close-all",
     ],
     props: {
         listdatacart: {
@@ -86,21 +89,20 @@ export default {
     },
     computed: {
         totalPrice() {
-            let total = 0;
-            this.listdatacart.forEach((item) => {
-                total +=
-                    (parseInt(item.initialStock) - parseInt(item.stock)) *
-                    parseInt(item.price);
+            let totalPrice = 0;
+            this.listdatacart.forEach((cartItem) => {
+                totalPrice +=
+                    parseInt(cartItem.quantity) * parseInt(cartItem.price);
             });
-            return Number(total).toLocaleString();
+            return Number(totalPrice).toLocaleString();
         },
     },
     methods: {
-        deleteFromCart(index, amountCancelled) {
-            this.$emit("emit-delete-from-cart", index, amountCancelled);
+        deleteFromCart(cartItemIndex, amountCancelled) {
+            this.$emit("emit-delete-from-cart", cartItemIndex, amountCancelled);
         },
-        deleteAllFromCart(index) {
-            this.$emit("emit-delete-all-from-cart", index);
+        deleteAllFromCart(cartItemIndex) {
+            this.$emit("emit-delete-all-from-cart", cartItemIndex);
         },
         showCheckoutPopup() {
             this.isCheckoutPopupVisible = true;
@@ -110,10 +112,7 @@ export default {
         },
         finishCheckout() {
             this.isCheckoutPopupVisible = false;
-            this.$emit("emit-close-cart");
-            this.listdatacart.forEach((item) => {
-                item.stock = item.initialStock;
-            });
+            this.$emit("emit-finish");
         },
         cancelCheckout() {
             this.isCheckoutPopupVisible = false;
@@ -122,7 +121,9 @@ export default {
             this.$emit("emit-close-cart");
         },
     },
-    mounted() {},
+    mounted() {
+        console.log("Cart component mounted.");
+    },
 };
 </script>
 
@@ -169,10 +170,10 @@ td {
     position: absolute;
     bottom: 10%;
     right: 20%;
-    margin-right: 3%;
+    margin-right: 3% !important;
 }
 
-.buy-more-button {
+.shop-more-button {
     position: absolute;
     bottom: 10%;
     right: 10%;
