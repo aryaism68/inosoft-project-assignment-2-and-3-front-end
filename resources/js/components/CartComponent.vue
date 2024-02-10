@@ -1,6 +1,7 @@
 <template>
     <div class="container floaters-cart">
         <h1 class="cart">Cart</h1>
+        <img src="../../assets/images/gourmand-gateaux.gif" />
         <hr />
         <table>
             <tr>
@@ -19,59 +20,56 @@
                 <td id="price">Rp.{{ cartItem.price.toLocaleString() }}</td>
                 <input
                     type="number"
-                    v-model="amountCancelled[cartItemIndex]"
+                    v-model="amountCancelled"
                     min="1"
-                    max="999"
                     placeholder="1"
                 />
-                <button
+                <button-component
                     class="custom-mr"
-                    @click="deleteFromCart(cartItemIndex, amountCancelled)"
-                >
-                    Delete
-                </button>
-                <button
+                    @emit-click="deleteFromCart(cartItemIndex, amountCancelled)"
+                    text="Delete"
+                />
+                <button-component
                     class="custom-mr"
-                    @click="deleteAllFromCart(cartItemIndex)"
-                >
-                    Delete All
-                </button>
+                    @emit-click="deleteAllFromCart(cartItemIndex)"
+                    text="Delete All"
+                />
             </tr>
         </table>
-        <table class="total">
-            <tr class="custom-total">
+        <table class="total-price">
+            <tr>
                 <td>Total: Rp.{{ totalPrice }}</td>
             </tr>
         </table>
         <div>
-            <button
+            <button-component
                 class="custom-mr checkout-button"
-                @click="showCheckoutPopup"
-            >
-                Checkout
-            </button>
-            <button class="custom-mr shop-more-button" @click="closeCart">
-                Shop more
-            </button>
-            <modal-component
+                @emit-click="showCheckoutPopup"
+                text="Checkout"
+            />
+            <button-component
+                class="custom-mr shop-more-button"
+                @emit-click="closeCart"
+                text="Shop more"
+            />
+            <checkout-confirmation-component
                 v-if="isCheckoutPopupVisible"
                 @close="hideCheckoutPopup"
                 @emit-finish="finishCheckout"
                 @emit-cancel="cancelCheckout"
                 :totalPaid="totalPrice"
-            ></modal-component>
+            ></checkout-confirmation-component>
         </div>
     </div>
 </template>
 
 <script>
-import { faTeletype } from "@fortawesome/free-solid-svg-icons";
-
 export default {
     emits: [
         "emit-delete-from-cart",
         "emit-delete-all-from-cart",
         "emit-close-cart",
+        "emit-close-cart-after-click-outside",
     ],
     props: {
         listdatacart: {
@@ -127,7 +125,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .floaters-cart {
     position: fixed;
     width: 50%;
@@ -148,6 +146,22 @@ export default {
     text-align: left;
 }
 
+img {
+    height: 25%;
+    width: 25%;
+    position: absolute;
+    top: 6%;
+    right: 10%;
+}
+
+hr {
+    color: darkorange;
+}
+
+.custom-mr {
+    margin-left: 5%;
+}
+
 table {
     table-layout: fixed;
     width: 100%;
@@ -160,34 +174,29 @@ td {
     overflow: hidden;
 }
 
-.total {
+.total-price {
     position: absolute;
-    bottom: 10%;
+    bottom: 8%;
     right: 0;
-}
-
-.checkout-button {
-    position: absolute;
-    bottom: 10%;
-    right: 20%;
-    margin-right: 3% !important;
-}
-
-.shop-more-button {
-    position: absolute;
-    bottom: 10%;
-    right: 10%;
+    font-size: x-large;
 }
 
 input {
     width: 25%;
-}
-
-button {
     font-size: medium;
+    margin-right: 2%;
 }
 
-hr {
-    color: darkorange;
+.checkout-button {
+    position: absolute;
+    bottom: 9%;
+    right: 18%;
+    margin-right: 3%;
+}
+
+.shop-more-button {
+    position: absolute;
+    bottom: 9%;
+    right: 9%;
 }
 </style>

@@ -18,16 +18,24 @@ const app = createApp({});
 
 import LandingComponent from "./components/LandingComponent.vue";
 app.component("landing-component", LandingComponent);
+import HeaderComponent from "./components/HeaderComponent.vue";
+app.component("header-component", HeaderComponent);
+import NavbarComponent from "./components/NavbarComponent.vue";
+app.component("navbar-component", NavbarComponent);
 import ProductListComponent from "./components/ProductListComponent.vue";
 app.component("product-list-component", ProductListComponent);
+import FloatingCartComponent from "./components/FloatingCartComponent.vue";
+app.component("floating-cart-component", FloatingCartComponent);
 import CartComponent from "./components/CartComponent.vue";
 app.component("cart-component", CartComponent);
 import EmptyCartComponent from "./components/EmptyCartComponent.vue";
 app.component("empty-cart-component", EmptyCartComponent);
+import CheckoutConfirmationComponent from "./components/CheckoutConfirmationComponent.vue";
+app.component("checkout-confirmation-component", CheckoutConfirmationComponent);
 import ButtonComponent from "./components/ButtonComponent.vue";
 app.component("button-component", ButtonComponent);
-import ModalComponent from "./components/ModalComponent.vue";
-app.component("modal-component", ModalComponent);
+import FooterComponent from "./components/FooterComponent.vue";
+app.component("footer-component", FooterComponent);
 
 /**
  * The following block of code may be used to automatically register your

@@ -1,56 +1,51 @@
 <template>
     <div class="container">
-        <div class="row d-flex justify-content-center">
-            <div class="col-lg-4 col-12 mb-4">
-                <div
-                    class="card background-custom text-orange h-100"
-                    v-for="(item, index) in listdata"
-                    :key="index"
-                >
-                    <div class="card-header p-4 border-0 background-custom">
-                        <h3 class="card-title">{{ item.category }}</h3>
-                        <img
-                            class="card-img-top featured-image"
-                            :src="
-                                require('../../assets/images/' +
-                                    item.url +
-                                    '.png').default
-                            "
-                        />
+        <div class="card-wrapper">
+            <div
+                class="card text-orange"
+                v-for="(item, index) in listdata"
+                :key="index"
+            >
+                <div class="card-header">
+                    <h3 class="card-title">{{ item.category }}</h3>
+                    <img
+                        class="card-img-top featured-image"
+                        :src="
+                            require('../../assets/images/' + item.url + '.png')
+                                .default
+                        "
+                    />
+                </div>
+
+                <div class="card-body">
+                    <div class="card-text">
+                        <h3>{{ item.name }}</h3>
+                        <p>
+                            {{ item.description }}
+                        </p>
+                        <p>Stock = {{ item.stock }} pcs</p>
+                        <p>Price = Rp.{{ item.price.toLocaleString() }}</p>
                     </div>
 
-                    <div class="card-body p-3 text-center">
-                        <div class="card-text">
-                            <h3>{{ item.name }}</h3>
-                            <p>
-                                {{ item.description }}
-                            </p>
-                        </div>
-
-                        <div class="card-body p-3 text-center mb-3">
-                            <p>Stok = {{ item.stock }} pcs</p>
-                            <p>Harga = Rp.{{ item.price.toLocaleString() }}</p>
-                            <input
-                                type="number"
-                                v-model="amountBought[index]"
-                                min="1"
-                                placeholder="1"
-                            />
-                            <button
-                                class="custom-mr"
-                                @click="addToCart(index, amountBought)"
-                                :disabled="checkStock(item.stock)"
-                            >
-                                Add to Cart
-                            </button>
-                            <button
-                                class="custom-mr"
-                                @click="addAllToCart(index)"
-                                :disabled="checkStock(item.stock)"
-                            >
-                                Add All to Cart
-                            </button>
-                        </div>
+                    <div class="card-interactive">
+                        <input
+                            type="number"
+                            v-model="amountBought"
+                            min="1"
+                            placeholder="1"
+                        />
+                        <button-component
+                            class="custom-mr"
+                            @emit-click="addToCart(index, amountBought)"
+                            :disabled="checkStock(item.stock)"
+                            text="Add to Cart"
+                        />
+                        <button-component
+                            class="custom-mr"
+                            @emit-click="addAllToCart(index)"
+                            :disabled="checkStock(item.stock)"
+                            text="Add All to Cart"
+                        />
                     </div>
                 </div>
             </div>
@@ -90,9 +85,43 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.card-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.card {
+    flex: 0 0 calc(33.3333% - 20px);
+    max-width: calc(33.3333% - 20px);
+    margin: 0 10px;
+    margin-bottom: 30px;
+}
+
+.featured-image {
+    width: 100%;
+    max-height: 170px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 10px;
+}
+
 input {
-    width: 10%;
-    margin-right: 5%;
+    width: 20%;
+    margin-top: 5%;
+    margin-right: 2%;
+    font-size: medium;
+}
+
+.custom-mr {
+    margin-right: 10px;
 }
 </style>

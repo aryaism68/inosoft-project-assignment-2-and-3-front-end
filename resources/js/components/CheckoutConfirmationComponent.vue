@@ -1,11 +1,23 @@
 <template>
-    <div class="container floaters-cart" id="modal">
+    <div class="container floaters-cart">
         <p>Scan QR Code below and pay Rp.{{ totalPaid }}</p>
         <p>Click 'Finish' to confirm payment and reload</p>
-        <img src="../../assets/images/qrCode.png" alt="QR Code" id="qr-code" />
+        <img
+            src="../../assets/images/qrCode.png"
+            alt="QR Code"
+            class="qr-code"
+        />
         <div>
-            <button @click="finishCheckout">Finish</button>
-            <button @click="cancelCheckout">Cancel</button>
+            <button-component
+                class="checkout-confirmation-buttons"
+                @emit-click="finishCheckout"
+                text="Finish"
+            />
+            <button-component
+                class="checkout-confirmation-buttons"
+                @emit-click="cancelCheckout"
+                text="Cancel"
+            />
         </div>
     </div>
 </template>
@@ -15,7 +27,7 @@ export default {
     emits: ["emit-finish", "emit-cancel"],
     props: {
         totalPaid: {
-            type: String,
+            type: Number,
             required: true,
         },
     },
@@ -47,12 +59,12 @@ export default {
     color: orange;
 }
 
-#qr-code {
-    height: 65%;
+.qr-code {
+    height: 57%;
     width: 50%;
 }
 
-button {
+.checkout-confirmation-buttons {
     margin: 2%;
     font-size: medium;
 }

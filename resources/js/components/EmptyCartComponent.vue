@@ -1,10 +1,13 @@
 <template>
-    <div class="container floaters-cart" id="modal">
+    <div class="container floaters-cart" id="empty-cart">
         <p>Oops, your cart is empty...</p>
-        <p>Click 'Continue' to shop more</p>
-        <img src="../../assets/images/cartIcon.png" alt="cart" />
-        <div>
-            <button @click="continueShopping">Continue</button>
+        <p>Click 'Continue' to shop.</p>
+        <img
+            src="../../assets/images/tkthao219-bubududu.gif"
+            alt="goShopping"
+        />
+        <div class="continue-button">
+            <button-component @emit-click="continueShopping" text="Continue" />
         </div>
     </div>
 </template>
@@ -38,19 +41,14 @@ export default {
     color: orange;
 }
 
-#qr-code {
-    height: 60%;
-    width: 50%;
-}
-
-button {
-    margin: 2%;
-    margin-top: 7%;
-    font-size: medium;
-}
-
 img {
     height: 60%;
     width: 50%;
+}
+
+.continue-button {
+    margin: 2%;
+    margin-top: 5%;
+    font-size: medium;
 }
 </style>

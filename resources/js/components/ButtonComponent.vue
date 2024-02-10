@@ -18,3 +18,9 @@ export default {
     },
 };
 </script>
+
+<style>
+button {
+    font-size: medium;
+}
+</style>
