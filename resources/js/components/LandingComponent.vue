@@ -12,6 +12,10 @@
             @emit-hide-unhide="hideUnhide"
             :totalQtyInCart="totalQuantityInCart"
         ></floating-cart-component>
+        <empty-cart-component
+            v-if="!isHidden && totalQuantityInCart == 0"
+            @emit-continue="continueShopping"
+        ></empty-cart-component>
         <cart-component
             :listdatacart="cart"
             @emit-delete-from-cart="deleteFromCart"
@@ -20,10 +24,6 @@
             @emit-finish="finishCheckout"
             v-if="!isHidden && totalQuantityInCart > 0"
         ></cart-component>
-        <empty-cart-component
-            v-if="!isHidden && totalQuantityInCart == 0"
-            @emit-continue="continueShopping"
-        ></empty-cart-component>
     </main>
 
     <footer-component></footer-component>
@@ -58,7 +58,7 @@ export default {
                     SKU: 3,
                     category: "Cupcakes",
                     name: "Vanilla Cupcake",
-                    description: "Whipped vanilla frosting on top",
+                    description: "Whipped vanilla frosting cupcake",
                     stock: 30,
                     price: 20000,
                     url: "cupcakesArticle",
@@ -132,6 +132,12 @@ export default {
             }
             item.stock = 0;
         },
+        hideUnhide() {
+            this.isHidden = !this.isHidden;
+        },
+        continueShopping() {
+            this.isHidden = true;
+        },
         deleteFromCart(cartItemIndex, amountCancelled) {
             const cartItem = this.cart[cartItemIndex];
             const itemIndex = this.list.findIndex(
@@ -157,14 +163,8 @@ export default {
         closeCart() {
             this.isHidden = true;
         },
-        continueShopping() {
-            this.isHidden = true;
-        },
         finishCheckout() {
             window.location.reload();
-        },
-        hideUnhide() {
-            this.isHidden = !this.isHidden;
         },
     },
     computed: {

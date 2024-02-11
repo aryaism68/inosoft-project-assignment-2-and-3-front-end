@@ -1,19 +1,22 @@
 <template>
     <div class="container">
         <ul class="custom-format-ul">
-            <li v-for="(item, index) in listdatanavbar" :key="index">
+            <li
+                v-for="(navbarItem, navbarIndex) in listdatanavbar"
+                :key="navbarIndex"
+            >
                 <a href="#" class="custom-format-a">
                     <img
                         :src="
                             require('../../assets/images/' +
-                                item.iconUrl +
+                                navbarItem.iconUrl +
                                 '.jpg').default
                         "
                         class=""
                         width="50"
                         height="50"
                     />
-                    {{ item.category }}
+                    {{ navbarItem.category }}
                 </a>
             </li>
         </ul>

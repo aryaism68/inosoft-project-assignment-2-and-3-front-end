@@ -44,7 +44,7 @@
         <div>
             <button-component
                 class="custom-mr checkout-button"
-                @emit-click="showCheckoutPopup"
+                @emit-click="showCheckoutConfirmationPopup"
                 text="Checkout"
             />
             <button-component
@@ -53,8 +53,8 @@
                 text="Shop more"
             />
             <checkout-confirmation-component
-                v-if="isCheckoutPopupVisible"
-                @close="hideCheckoutPopup"
+                v-if="isCheckoutConfirmationPopupVisible"
+                @close="hideCheckoutConfirmationPopup"
                 @emit-finish="finishCheckout"
                 @emit-cancel="cancelCheckout"
                 :totalPaid="totalPrice"
@@ -69,7 +69,7 @@ export default {
         "emit-delete-from-cart",
         "emit-delete-all-from-cart",
         "emit-close-cart",
-        "emit-close-cart-after-click-outside",
+        "emit-finish",
     ],
     props: {
         listdatacart: {
@@ -82,7 +82,7 @@ export default {
     data() {
         return {
             amountCancelled: 1,
-            isCheckoutPopupVisible: false,
+            isCheckoutConfirmationPopupVisible: false,
         };
     },
     computed: {
@@ -98,25 +98,27 @@ export default {
     methods: {
         deleteFromCart(cartItemIndex, amountCancelled) {
             this.$emit("emit-delete-from-cart", cartItemIndex, amountCancelled);
+            this.amountCancelled = 1;
         },
         deleteAllFromCart(cartItemIndex) {
             this.$emit("emit-delete-all-from-cart", cartItemIndex);
+            this.amountCancelled = 1;
         },
-        showCheckoutPopup() {
-            this.isCheckoutPopupVisible = true;
-        },
-        hideCheckoutPopup() {
-            this.isCheckoutPopupVisible = false;
-        },
-        finishCheckout() {
-            this.isCheckoutPopupVisible = false;
-            this.$emit("emit-finish");
-        },
-        cancelCheckout() {
-            this.isCheckoutPopupVisible = false;
+        showCheckoutConfirmationPopup() {
+            this.isCheckoutConfirmationPopupVisible = true;
         },
         closeCart() {
             this.$emit("emit-close-cart");
+        },
+        hideCheckoutConfirmationPopup() {
+            this.isCheckoutConfirmationPopupVisible = false;
+        },
+        finishCheckout() {
+            this.isCheckoutConfirmationPopupVisible = false;
+            this.$emit("emit-finish");
+        },
+        cancelCheckout() {
+            this.isCheckoutConfirmationPopupVisible = false;
         },
     },
     mounted() {
