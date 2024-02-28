@@ -7,7 +7,7 @@
             <tr>
                 <th><h3>Name</h3></th>
                 <th>Quantity</th>
-                <th>Price</th>
+                <th>Subtotal</th>
             </tr>
             <tr
                 class="list"
@@ -17,7 +17,9 @@
             >
                 <td>{{ cartItem.name }}</td>
                 <td id="quantity">{{ cartItem.quantity }}</td>
-                <td id="price">Rp.{{ cartItem.price.toLocaleString() }}</td>
+                <td id="subtotal-price">
+                    Rp.{{ subtotalPrice(cartItem).toLocaleString() }}
+                </td>
                 <input
                     type="number"
                     v-model="amountCancelled"
@@ -38,7 +40,7 @@
         </table>
         <table class="total-price">
             <tr>
-                <td>Total: Rp.{{ totalPrice }}</td>
+                <td>Total: Rp.{{ totalPrice.toLocaleString() }}</td>
             </tr>
         </table>
         <div>
@@ -86,13 +88,17 @@ export default {
         };
     },
     computed: {
+        subtotalPrice() {
+            return (cartItem) =>
+                parseInt(cartItem.quantity) * parseInt(cartItem.price);
+        },
         totalPrice() {
             let totalPrice = 0;
             this.listdatacart.forEach((cartItem) => {
                 totalPrice +=
                     parseInt(cartItem.quantity) * parseInt(cartItem.price);
             });
-            return Number(totalPrice).toLocaleString();
+            return totalPrice;
         },
     },
     methods: {
