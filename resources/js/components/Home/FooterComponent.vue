@@ -1,6 +1,6 @@
 <template>
     <div class="footer-custom text-orange">
-        <img src="../../assets/images/logoTitle.png" alt="logoFooter" />
+        <img src="../../../assets/images/logoTitle.png" alt="logoFooter" />
         <p class="brand">Aurelia&nbsp;Bakery&nbsp;&#169;&nbsp;2024</p>
     </div>
 </template>

@@ -1,43 +1,51 @@
 <template>
     <div class="container floaters-cart">
-        <p>Scan QR Code below and pay Rp.{{ totalPaid.toLocaleString() }}.</p>
+        <p>Scan QR Code below and pay Rp.{{ totalPrice.toLocaleString() }}.</p>
         <p>Click 'Finish' to confirm payment and reload.</p>
         <img
-            src="../../assets/images/qrCode.png"
+            src="../../../assets/images/qrCode.png"
             alt="QR Code"
             class="qr-code"
         />
         <div>
-            <button-component
+            <Button
                 class="checkout-confirmation-buttons"
-                @emit-click="finishCheckout"
+                @click="finishCheckout"
                 text="Finish"
-            />
-            <button-component
+            ></Button>
+            <Button
                 class="checkout-confirmation-buttons"
-                @emit-click="cancelCheckout"
+                @click="backToCart"
                 text="Cancel"
-            />
+            ></Button>
         </div>
     </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import Button from "../ButtonComponent.vue";
+
 export default {
-    emits: ["emit-finish", "emit-cancel"],
-    props: {
-        totalPaid: {
-            type: Number,
-            required: true,
-        },
+    components: {
+        Button,
     },
     methods: {
         finishCheckout() {
-            this.$emit("emit-finish");
+            window.location.reload();
+            window.location.href = "/";
         },
-        cancelCheckout() {
-            this.$emit("emit-cancel");
+        backToCart() {
+            this.$router.go(-1);
         },
+    },
+    computed: {
+        ...mapGetters({
+            totalPrice: "getCartTotalPrice",
+        }),
+    },
+    mounted() {
+        console.log("Checkout confirmation component mounted.");
     },
 };
 </script>

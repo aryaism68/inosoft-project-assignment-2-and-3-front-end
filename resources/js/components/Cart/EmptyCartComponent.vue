@@ -3,23 +3,29 @@
         <p>Oops, your cart is empty...</p>
         <p>Click 'Continue' to shop.</p>
         <img
-            src="../../assets/images/tkthao219-bubududu.gif"
+            src="../../../assets/images/tkthao219-bubududu.gif"
             alt="goShopping"
         />
         <div class="continue-button">
-            <button-component @emit-click="continueShopping" text="Continue" />
+            <Button @click="backToHome" text="Continue"></Button>
         </div>
     </div>
 </template>
 
 <script>
+import Button from "../ButtonComponent.vue";
+
 export default {
-    emits: ["emit-continue"],
-    props: {},
+    components: {
+        Button,
+    },
     methods: {
-        continueShopping() {
-            this.$emit("emit-continue");
+        backToHome() {
+            this.$router.push("/");
         },
+    },
+    mounted() {
+        console.log("Empty cart component mounted.");
     },
 };
 </script>

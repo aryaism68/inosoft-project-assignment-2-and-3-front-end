@@ -3,7 +3,6 @@
         class="floaters"
         src="../../assets/images/cartIcon.png"
         alt="cartIcon"
-        @click="hideUnhide"
     />
     <h1 class="floaters cart-qty" v-if="totalQtyInCart > 0">
         {{ totalQtyInCart }}
@@ -11,18 +10,13 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
-    emits: ["emit-hide-unhide"],
-    props: {
-        totalQtyInCart: {
-            type: Number,
-            required: true,
-        },
-    },
-    methods: {
-        hideUnhide() {
-            this.$emit("emit-hide-unhide");
-        },
+    computed: {
+        ...mapGetters({
+            totalQtyInCart: "getTotalQtyInCart",
+        }),
     },
 };
 </script>

@@ -7,6 +7,9 @@
 import "./bootstrap";
 
 import { createApp } from "vue";
+import { createRouter, createWebHistory } from "vue-router";
+import { routes } from "./routes";
+import store from "./store";
 
 /**
  * Next, we will create a fresh Vue application instance. You may then begin
@@ -15,27 +18,10 @@ import { createApp } from "vue";
  */
 
 const app = createApp({});
-
-import LandingComponent from "./components/LandingComponent.vue";
-app.component("landing-component", LandingComponent);
-import HeaderComponent from "./components/HeaderComponent.vue";
-app.component("header-component", HeaderComponent);
-import NavbarComponent from "./components/NavbarComponent.vue";
-app.component("navbar-component", NavbarComponent);
-import ProductListComponent from "./components/ProductListComponent.vue";
-app.component("product-list-component", ProductListComponent);
-import FloatingCartComponent from "./components/FloatingCartComponent.vue";
-app.component("floating-cart-component", FloatingCartComponent);
-import CartComponent from "./components/CartComponent.vue";
-app.component("cart-component", CartComponent);
-import EmptyCartComponent from "./components/EmptyCartComponent.vue";
-app.component("empty-cart-component", EmptyCartComponent);
-import CheckoutConfirmationComponent from "./components/CheckoutConfirmationComponent.vue";
-app.component("checkout-confirmation-component", CheckoutConfirmationComponent);
-import ButtonComponent from "./components/ButtonComponent.vue";
-app.component("button-component", ButtonComponent);
-import FooterComponent from "./components/FooterComponent.vue";
-app.component("footer-component", FooterComponent);
+const router = createRouter({
+    history: createWebHistory(),
+    routes,
+});
 
 /**
  * The following block of code may be used to automatically register your
@@ -55,4 +41,6 @@ app.component("footer-component", FooterComponent);
  * scaffolding. Otherwise, you will need to add an element yourself.
  */
 
+app.use(router);
+app.use(store);
 app.mount("#app");

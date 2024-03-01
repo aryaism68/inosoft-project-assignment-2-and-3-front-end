@@ -3,16 +3,20 @@
         <div class="card-wrapper">
             <div
                 class="card text-orange"
-                v-for="(item, index) in listdata"
+                v-for="(item, index) in list"
                 :key="index"
+                :class="{ behind: item.stock === 0 }"
             >
                 <div class="card-header">
-                    <h3 class="card-title">{{ item.category }}</h3>
+                    <h3 class="card-title" :id="item.category">
+                        {{ item.category }}
+                    </h3>
                     <img
                         class="card-img-top featured-image"
                         :src="
-                            require('../../assets/images/' + item.url + '.png')
-                                .default
+                            require('../../../assets/images/' +
+                                item.url +
+                                '.png').default
                         "
                     />
                 </div>
@@ -33,19 +37,20 @@
                             v-model="amountBought"
                             min="1"
                             placeholder="1"
+                            :disabled="item.isOutOfStock"
                         />
-                        <button-component
+                        <Button
                             class="custom-mr"
-                            @emit-click="addToCart(index, amountBought)"
-                            :disabled="checkStock(item.stock)"
                             text="Add to Cart"
-                        />
-                        <button-component
+                            @click="addToCart(index)"
+                            :disabled="item.isOutOfStock"
+                        ></Button>
+                        <Button
                             class="custom-mr"
-                            @emit-click="addAllToCart(index)"
-                            :disabled="checkStock(item.stock)"
                             text="Add All to Cart"
-                        />
+                            @click="addAllToCart(index)"
+                            :disabled="item.isOutOfStock"
+                        ></Button>
                     </div>
                 </div>
             </div>
@@ -54,15 +59,12 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import Button from "../ButtonComponent.vue";
+
 export default {
-    emits: ["emit-add-to-cart", "emit-add-all-to-cart"],
-    props: {
-        listdata: {
-            type: Array,
-            default: () => {
-                return [];
-            },
-        },
+    components: {
+        Button,
     },
     data() {
         return {
@@ -70,17 +72,24 @@ export default {
         };
     },
     methods: {
-        addToCart(index, amountBought) {
-            this.$emit("emit-add-to-cart", index, amountBought);
+        addToCart(index) {
+            const item = this.list[index];
+            this.$store.dispatch("addToCart", {
+                item,
+                amountBought: this.amountBought,
+            });
             this.amountBought = 1;
         },
         addAllToCart(index) {
-            this.$emit("emit-add-all-to-cart", index);
+            const item = this.list[index];
+            this.$store.dispatch("addAllToCart", item);
             this.amountBought = 1;
         },
-        checkStock(stock) {
-            return stock <= 0;
-        },
+    },
+    computed: {
+        ...mapGetters({
+            list: "getList",
+        }),
     },
 };
 </script>
@@ -104,6 +113,11 @@ export default {
     max-width: calc(33.3333% - 20px);
     margin: 0 10px;
     margin-bottom: 30px;
+}
+
+.behind {
+    order: 5;
+    filter: grayscale(100%);
 }
 
 .featured-image {

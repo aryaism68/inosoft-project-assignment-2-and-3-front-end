@@ -1,22 +1,19 @@
 <template>
     <div class="container">
         <ul class="custom-format-ul">
-            <li
-                v-for="(navbarItem, navbarIndex) in listdatanavbar"
-                :key="navbarIndex"
-            >
-                <a href="#" class="custom-format-a">
+            <li v-for="(item, index) in list" :key="index">
+                <a href="" class="custom-format-a">
                     <img
                         :src="
-                            require('../../assets/images/' +
-                                navbarItem.iconUrl +
+                            require('../../../assets/images/' +
+                                item.iconUrl +
                                 '.jpg').default
                         "
                         class=""
                         width="50"
                         height="50"
                     />
-                    {{ navbarItem.category }}
+                    {{ item.category }}
                 </a>
             </li>
         </ul>
@@ -24,14 +21,13 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
-    props: {
-        listdatanavbar: {
-            type: Array,
-            default: () => {
-                return [];
-            },
-        },
+    computed: {
+        ...mapGetters({
+            list: "getList",
+        }),
     },
 };
 </script>

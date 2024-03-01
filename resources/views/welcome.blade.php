@@ -20,7 +20,7 @@
     </head>
     <body class="antialiased">
         <div id="app">
-            <landing-component></landing-component>
+            <router-view></router-view>
         </div>
 
         <script src="{{mix('js/app.js')}}" type="text/javascript">

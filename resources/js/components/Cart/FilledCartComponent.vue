@@ -1,7 +1,7 @@
 <template>
     <div class="container floaters-cart">
         <h1 class="cart">Cart</h1>
-        <img src="../../assets/images/gourmand-gateaux.gif" />
+        <img src="../../../assets/images/gourmand-gateaux.gif" />
         <hr />
         <table>
             <tr>
@@ -11,7 +11,7 @@
             </tr>
             <tr
                 class="list"
-                v-for="(cartItem, cartItemIndex) in listdatacart"
+                v-for="(cartItem, cartItemIndex) in cart"
                 :key="cartItemIndex"
                 v-show="cartItem.quantity > 0"
             >
@@ -26,16 +26,17 @@
                     min="1"
                     placeholder="1"
                 />
-                <button-component
+                <Button
                     class="custom-mr"
-                    @emit-click="deleteFromCart(cartItemIndex, amountCancelled)"
+                    @click="deleteFromCart(cartItemIndex)"
                     text="Delete"
-                />
-                <button-component
+                ></Button>
+                <Button
                     class="custom-mr"
-                    @emit-click="deleteAllFromCart(cartItemIndex)"
+                    @click="deleteAllFromCart(cartItemIndex)"
                     text="Delete All"
-                />
+                >
+                </Button>
             </tr>
         </table>
         <table class="total-price">
@@ -44,91 +45,73 @@
             </tr>
         </table>
         <div>
-            <button-component
+            <Button
                 class="custom-mr checkout-button"
-                @emit-click="showCheckoutConfirmationPopup"
+                @click="goToCheckout"
                 text="Checkout"
-            />
-            <button-component
-                class="custom-mr shop-more-button"
-                @emit-click="closeCart"
-                text="Shop more"
-            />
-            <checkout-confirmation-component
-                v-if="isCheckoutConfirmationPopupVisible"
-                @close="hideCheckoutConfirmationPopup"
-                @emit-finish="finishCheckout"
-                @emit-cancel="cancelCheckout"
-                :totalPaid="totalPrice"
-            ></checkout-confirmation-component>
+            ></Button>
+            <Button
+                class="custom-mr cancel-button"
+                @click="backToHome"
+                text="Cancel"
+            ></Button>
         </div>
     </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import Button from "../ButtonComponent.vue";
+
 export default {
-    emits: [
-        "emit-delete-from-cart",
-        "emit-delete-all-from-cart",
-        "emit-close-cart",
-        "emit-finish",
-    ],
-    props: {
-        listdatacart: {
-            type: Array,
-            default: () => {
-                return [];
-            },
-        },
+    components: {
+        Button,
     },
     data() {
         return {
             amountCancelled: 1,
-            isCheckoutConfirmationPopupVisible: false,
         };
     },
     computed: {
-        subtotalPrice() {
-            return (cartItem) =>
-                parseInt(cartItem.quantity) * parseInt(cartItem.price);
-        },
-        totalPrice() {
-            let totalPrice = 0;
-            this.listdatacart.forEach((cartItem) => {
-                totalPrice +=
-                    parseInt(cartItem.quantity) * parseInt(cartItem.price);
-            });
-            return totalPrice;
+        ...mapGetters({
+            cart: "getCart",
+            subtotalPrice: "getCartSubtotalPrice",
+            totalPrice: "getCartTotalPrice",
+        }),
+    },
+    watch: {
+        totalPrice: {
+            immediate: true,
+            handler(newValue) {
+                if (newValue === 0) {
+                    this.$router.push("/cart/empty");
+                }
+            },
         },
     },
     methods: {
-        deleteFromCart(cartItemIndex, amountCancelled) {
-            this.$emit("emit-delete-from-cart", cartItemIndex, amountCancelled);
+        deleteFromCart(cartItemIndex) {
+            const cartItem = this.cart[cartItemIndex];
+            this.$store.dispatch("deleteFromCart", {
+                cartItem,
+                amountCancelled: this.amountCancelled,
+            });
             this.amountCancelled = 1;
         },
         deleteAllFromCart(cartItemIndex) {
-            this.$emit("emit-delete-all-from-cart", cartItemIndex);
+            const cartItem = this.cart[cartItemIndex];
+            this.$store.dispatch("deleteAllFromCart", cartItem);
             this.amountCancelled = 1;
         },
-        showCheckoutConfirmationPopup() {
-            this.isCheckoutConfirmationPopupVisible = true;
+        goToCheckout() {
+            this.$router.push("/cart/checkout");
         },
-        closeCart() {
-            this.$emit("emit-close-cart");
-        },
-        hideCheckoutConfirmationPopup() {
-            this.isCheckoutConfirmationPopupVisible = false;
-        },
-        finishCheckout() {
-            this.isCheckoutConfirmationPopupVisible = false;
-            this.$emit("emit-finish");
-        },
-        cancelCheckout() {
-            this.isCheckoutConfirmationPopupVisible = false;
+        backToHome() {
+            this.$router.push("/");
         },
     },
     mounted() {
-        console.log("Cart component mounted.");
+        console.log("Filled cart component mounted.");
     },
 };
 </script>
@@ -198,13 +181,13 @@ input {
 .checkout-button {
     position: absolute;
     bottom: 9%;
-    right: 18%;
+    right: 16%;
     margin-right: 3%;
 }
 
-.shop-more-button {
+.cancel-button {
     position: absolute;
     bottom: 9%;
-    right: 9%;
+    right: 11%;
 }
 </style>
