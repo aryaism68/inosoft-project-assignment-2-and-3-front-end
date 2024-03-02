@@ -1,59 +1,9 @@
 import { createStore } from "vuex";
+import axios from "axios";
 
 export default createStore({
     state: {
-        list: [
-            {
-                SKU: 1,
-                category: "Cakes",
-                name: "Choco Cake",
-                description: "A melt-in-mouth Choco Cake",
-                stock: 50,
-                price: 40000,
-                url: "cakesArticle",
-                iconUrl: "cakesIcon",
-            },
-            {
-                SKU: 2,
-                category: "Cookies",
-                name: "Raisins Cookie",
-                description: "Classic ginger Raisins Cookies",
-                stock: 20,
-                price: 10000,
-                url: "cookiesArticle",
-                iconUrl: "cookiesIcon",
-            },
-            {
-                SKU: 3,
-                category: "Cupcakes",
-                name: "Vanilla Cupcake",
-                description: "Whipped vanilla frosting cupcake",
-                stock: 30,
-                price: 20000,
-                url: "cupcakesArticle",
-                iconUrl: "cupcakesIcon",
-            },
-            {
-                SKU: 4,
-                category: "Donuts",
-                name: "Sweets Donut",
-                description: "Donut worry and be happy",
-                stock: 40,
-                price: 30000,
-                url: "donutsArticle",
-                iconUrl: "donutsIcon",
-            },
-            {
-                SKU: 5,
-                category: "Pastries",
-                name: "Macaron",
-                description: "Crunchy on shells, mildly moist inside",
-                stock: 60,
-                price: 50000,
-                url: "pastriesArticle",
-                iconUrl: "pastriesIcon",
-            },
-        ],
+        list: [],
         cart: [],
     },
     getters: {
@@ -80,6 +30,10 @@ export default createStore({
         },
     },
     actions: {
+        setList: async (context) => {
+            let response = await axios.get("api/getList");
+            context.commit("SET_LIST", response.data);
+        },
         addToCart(context, payload) {
             context.commit("ADD_TO_CART", payload);
         },
@@ -94,6 +48,9 @@ export default createStore({
         },
     },
     mutations: {
+        SET_LIST(state, payload) {
+            state.list = payload;
+        },
         ADD_TO_CART(state, payload) {
             const { item, amountBought } = payload;
             const cartItemIndex = state.cart.findIndex(

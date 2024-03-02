@@ -42,13 +42,13 @@
                         <Button
                             class="custom-mr"
                             text="Add to Cart"
-                            @click="addToCart(index)"
+                            @click="addToCart(item)"
                             :disabled="item.isOutOfStock"
                         ></Button>
                         <Button
                             class="custom-mr"
                             text="Add All to Cart"
-                            @click="addAllToCart(index)"
+                            @click="addAllToCart(item)"
                             :disabled="item.isOutOfStock"
                         ></Button>
                     </div>
@@ -72,16 +72,14 @@ export default {
         };
     },
     methods: {
-        addToCart(index) {
-            const item = this.list[index];
+        addToCart(item) {
             this.$store.dispatch("addToCart", {
                 item,
                 amountBought: this.amountBought,
             });
             this.amountBought = 1;
         },
-        addAllToCart(index) {
-            const item = this.list[index];
+        addAllToCart(item) {
             this.$store.dispatch("addAllToCart", item);
             this.amountBought = 1;
         },
@@ -90,6 +88,11 @@ export default {
         ...mapGetters({
             list: "getList",
         }),
+    },
+    created() {
+        if (this.$store.state.cart.length === 0) {
+            this.$store.dispatch("setList");
+        }
     },
 };
 </script>

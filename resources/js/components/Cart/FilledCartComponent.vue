@@ -28,12 +28,12 @@
                 />
                 <Button
                     class="custom-mr"
-                    @click="deleteFromCart(cartItemIndex)"
+                    @click="deleteFromCart(cartItem)"
                     text="Delete"
                 ></Button>
                 <Button
                     class="custom-mr"
-                    @click="deleteAllFromCart(cartItemIndex)"
+                    @click="deleteAllFromCart(cartItem)"
                     text="Delete All"
                 >
                 </Button>
@@ -90,16 +90,14 @@ export default {
         },
     },
     methods: {
-        deleteFromCart(cartItemIndex) {
-            const cartItem = this.cart[cartItemIndex];
+        deleteFromCart(cartItem) {
             this.$store.dispatch("deleteFromCart", {
                 cartItem,
                 amountCancelled: this.amountCancelled,
             });
             this.amountCancelled = 1;
         },
-        deleteAllFromCart(cartItemIndex) {
-            const cartItem = this.cart[cartItemIndex];
+        deleteAllFromCart(cartItem) {
             this.$store.dispatch("deleteAllFromCart", cartItem);
             this.amountCancelled = 1;
         },
