@@ -1,7 +1,10 @@
 <template>
     <div class="container floaters-cart">
         <h1 class="cart">Cart</h1>
-        <img src="../../../assets/images/gourmand-gateaux.gif" />
+        <img
+            src="../../../assets/images/gourmand-gateaux.gif"
+            alt="Enjoy cakes"
+        />
         <hr />
         <table>
             <tr>
@@ -13,7 +16,6 @@
                 class="list"
                 v-for="(cartItem, cartItemIndex) in cart"
                 :key="cartItemIndex"
-                v-show="cartItem.quantity > 0"
             >
                 <td>{{ cartItem.name }}</td>
                 <td id="quantity">{{ cartItem.quantity }}</td>
@@ -28,12 +30,12 @@
                 />
                 <Button
                     class="custom-mr"
-                    @click="deleteFromCart(cartItem)"
+                    @click="deleteFromCart(cartItem, cartItemIndex)"
                     text="Delete"
                 ></Button>
                 <Button
                     class="custom-mr"
-                    @click="deleteAllFromCart(cartItem)"
+                    @click="deleteAllFromCart(cartItem, cartItemIndex)"
                     text="Delete All"
                 >
                 </Button>
@@ -90,15 +92,19 @@ export default {
         },
     },
     methods: {
-        deleteFromCart(cartItem) {
+        deleteFromCart(cartItem, cartItemIndex) {
             this.$store.dispatch("deleteFromCart", {
                 cartItem,
+                cartItemIndex,
                 amountCancelled: this.amountCancelled,
             });
             this.amountCancelled = 1;
         },
-        deleteAllFromCart(cartItem) {
-            this.$store.dispatch("deleteAllFromCart", cartItem);
+        deleteAllFromCart(cartItem, cartItemIndex) {
+            this.$store.dispatch("deleteAllFromCart", {
+                cartItem,
+                cartItemIndex,
+            });
             this.amountCancelled = 1;
         },
         goToCheckout() {

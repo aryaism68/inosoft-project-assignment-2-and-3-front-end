@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import Button from "../components/ButtonComponent.vue";
+import Button from "./ButtonComponent.vue";
 
 export default {
     components: {
@@ -38,8 +38,8 @@ export default {
 
 .right {
     position: absolute;
-    top: 14%;
-    right: 25%;
+    top: 12%;
+    right: 26%;
 }
 
 .custom-format {

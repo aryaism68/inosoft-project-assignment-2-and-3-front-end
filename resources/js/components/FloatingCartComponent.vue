@@ -1,9 +1,5 @@
 <template>
-    <img
-        class="floaters"
-        src="../../assets/images/cartIcon.png"
-        alt="cartIcon"
-    />
+    <img class="floaters" src="../../assets/images/cartIcon.png" alt="Cart" />
     <h1 class="floaters cart-qty" v-if="totalQtyInCart > 0">
         {{ totalQtyInCart }}
     </h1>
@@ -28,6 +24,7 @@ export default {
     height: 60px;
     bottom: 40px;
     right: 40px;
+    color: orange;
 }
 
 .cart-qty {

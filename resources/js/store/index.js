@@ -7,6 +7,9 @@ export default createStore({
         cart: [],
     },
     getters: {
+        getLoadingStatus(state) {
+            return state.isLoaded;
+        },
         getList(state) {
             return state.list;
         },
@@ -46,10 +49,23 @@ export default createStore({
         deleteAllFromCart(context, payload) {
             context.commit("DELETE_ALL_FROM_CART", payload);
         },
+        finishCheckout: async (context, payload) => {
+            let response = await axios.post(
+                // if using back-end, the address should be changed accordingly
+                "http://127.0.0.1:8000/api/postBoughtStocks",
+                payload
+            );
+            // so the mutation can send the data of product and amount bought to the back-end (server) for updating stock in server
+            context.commit("POST_BOUGHT_STOCKS", response.data);
+            // if using back-end, we should dispatch a new request to get the updated stock back to front-end by using the commented code below
+            // await context.dispatch("setList");
+            context.commit("CLEAR_CART");
+        },
     },
     mutations: {
         SET_LIST(state, payload) {
             state.list = payload;
+            state.isLoaded = true;
         },
         ADD_TO_CART(state, payload) {
             const { item, amountBought } = payload;
@@ -94,7 +110,7 @@ export default createStore({
             item.isOutOfStock = true;
         },
         DELETE_FROM_CART(state, payload) {
-            const { cartItem, amountCancelled } = payload;
+            const { cartItem, cartItemIndex, amountCancelled } = payload;
             const itemIndex = state.list.findIndex(
                 (item) => item.SKU === cartItem.SKU
             );
@@ -102,20 +118,30 @@ export default createStore({
             if (amountCancelled > 0 && amountCancelled <= cartItem.quantity) {
                 item.stock += amountCancelled;
                 cartItem.quantity -= amountCancelled;
+                if (cartItem.quantity === 0) {
+                    state.cart.splice(cartItemIndex, 1);
+                }
                 item.isOutOfStock = item.stock === 0;
             } else {
                 window.alert("Please enter the correct quantity");
             }
         },
         DELETE_ALL_FROM_CART(state, payload) {
-            const cartItem = payload;
+            const { cartItem, cartItemIndex } = payload;
             const itemIndex = state.list.findIndex(
                 (item) => item.SKU === cartItem.SKU
             );
             const item = state.list[itemIndex];
             item.stock += cartItem.quantity;
-            cartItem.quantity = 0;
+            state.cart.splice(cartItemIndex, 1);
             item.isOutOfStock = false;
+        },
+        POST_BOUGHT_STOCKS(state, payload) {
+            const cart = payload;
+            state.data = cart;
+        },
+        CLEAR_CART(state) {
+            state.cart = [];
         },
     },
 });

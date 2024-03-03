@@ -23,12 +23,19 @@
 
                 <div class="card-body">
                     <div class="card-text">
-                        <h3>{{ item.name }}</h3>
-                        <p>
+                        <h3 class="custom-padding">{{ item.name }}</h3>
+                        <p class="custom-padding">
                             {{ item.description }}
                         </p>
-                        <p>Stock = {{ item.stock }} pcs</p>
-                        <p>Price = Rp.{{ item.price.toLocaleString() }}</p>
+                        <p class="custom-padding" v-if="item.stock > 0">
+                            {{ item.stock }} pcs available
+                        </p>
+                        <p v-else>&nbsp</p>
+                        <p class="price">
+                            <strong
+                                >Rp.{{ item.price.toLocaleString() }}</strong
+                            >
+                        </p>
                     </div>
 
                     <div class="card-interactive">
@@ -87,10 +94,11 @@ export default {
     computed: {
         ...mapGetters({
             list: "getList",
+            isLoaded: "getLoadingStatus",
         }),
     },
     created() {
-        if (this.$store.state.cart.length === 0) {
+        if (!this.isLoaded) {
             this.$store.dispatch("setList");
         }
     },
@@ -131,14 +139,27 @@ export default {
     border-radius: 10px;
 }
 
+.custom-padding {
+    padding-left: 3%;
+}
+
+.price {
+    font-size: larger;
+    padding-left: 65%;
+}
+
+.card-interactive {
+    text-align: center;
+}
+
 input {
     width: 20%;
-    margin-top: 5%;
-    margin-right: 2%;
+    margin-top: 2%;
+    margin-right: 8%;
     font-size: medium;
 }
 
 .custom-mr {
-    margin-right: 10px;
+    margin-right: 6%;
 }
 </style>

@@ -18,3 +18,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::get('/getList', 'Mocking\Controllers\HomeController@getData');
+Route::post('/postBoughtStocks', 'Mocking\Controllers\HomeController@postData');

@@ -32,8 +32,8 @@ export default {
     },
     methods: {
         finishCheckout() {
-            window.location.reload();
-            window.location.href = "/";
+            this.$store.dispatch("finishCheckout", this.cart);
+            this.$router.push("/");
         },
         backToCart() {
             this.$router.go(-1);
@@ -42,6 +42,7 @@ export default {
     computed: {
         ...mapGetters({
             totalPrice: "getCartTotalPrice",
+            cart: "getCart",
         }),
     },
     mounted() {
