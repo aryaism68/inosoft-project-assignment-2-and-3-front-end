@@ -1,7 +1,7 @@
 <template>
     <div class="container floaters-cart">
         <p>Scan QR Code below and pay Rp.{{ totalPrice.toLocaleString() }}.</p>
-        <p>Click 'Finish' to confirm payment and reload.</p>
+        <p>Click 'Finish' to confirm payment.</p>
         <img
             src="../../../assets/images/qrCode.png"
             alt="QR Code"

@@ -39,6 +39,7 @@ export default {
     justify-content: space-evenly;
     position: absolute;
     top: 0;
+    left: 28%;
 }
 
 .custom-format-a {

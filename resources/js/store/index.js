@@ -31,6 +31,17 @@ export default createStore({
                 return total + cartItem.quantity * cartItem.price;
             }, 0);
         },
+        getCheckOutStatus(state) {
+            return state.isCheckout;
+        },
+        getTotalStockInList(state) {
+            return state.list.reduce((total, item) => total + item.stock, 0);
+        },
+        getZeroStockZeroQuantity(state, getters) {
+            const zeroStock = getters.getTotalStockInList === 0;
+            const zeroQuantity = getters.isCartEmpty;
+            return zeroStock && zeroQuantity;
+        },
     },
     actions: {
         setList: async (context) => {
@@ -59,7 +70,11 @@ export default createStore({
             context.commit("POST_BOUGHT_STOCKS", response.data);
             // if using back-end, we should dispatch a new request to get the updated stock back to front-end by using the commented code below
             // await context.dispatch("setList");
+            context.commit("SHOW_SOLD_OUT_POP_UP");
             context.commit("CLEAR_CART");
+        },
+        closeSoldOutPopUp(context) {
+            context.commit("CLOSE_SOLD_OUT_POP_UP");
         },
     },
     mutations: {
@@ -140,8 +155,14 @@ export default createStore({
             const cart = payload;
             state.data = cart;
         },
+        SHOW_SOLD_OUT_POP_UP(state) {
+            state.isCheckout = true;
+        },
         CLEAR_CART(state) {
             state.cart = [];
+        },
+        CLOSE_SOLD_OUT_POP_UP(state) {
+            state.isCheckout = false;
         },
     },
 });

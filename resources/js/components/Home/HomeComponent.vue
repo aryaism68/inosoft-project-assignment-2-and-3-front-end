@@ -1,31 +1,46 @@
 <template>
     <Header></Header>
     <Navbar></Navbar>
+    <Contact></Contact>
 
     <main>
         <ProductList></ProductList>
         <router-link to="/cart">
             <FloatingCart></FloatingCart>
         </router-link>
+        <div v-if="checkOutStatus">
+            <SoldOutComponent v-if="soldOut"></SoldOutComponent>
+        </div>
     </main>
 
     <Footer></Footer>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import Header from "../Home/HeaderComponent.vue";
 import Navbar from "../Home/NavbarComponent.vue";
+import Contact from "../Home/ContactComponent.vue";
 import ProductList from "../Home/ProductListComponent.vue";
 import FloatingCart from "../FloatingCartComponent.vue";
+import SoldOutComponent from "../Home/SoldOutComponent.vue";
 import Footer from "../Home/FooterComponent.vue";
 
 export default {
     components: {
         Header,
         Navbar,
+        Contact,
         ProductList,
         FloatingCart,
+        SoldOutComponent,
         Footer,
+    },
+    computed: {
+        ...mapGetters({
+            checkOutStatus: "getCheckOutStatus",
+            soldOut: "getZeroStockZeroQuantity",
+        }),
     },
     mounted() {
         console.log("Home component mounted.");
